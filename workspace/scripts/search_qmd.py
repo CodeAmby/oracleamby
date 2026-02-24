@@ -16,11 +16,12 @@ if len(sys.argv)<2:
 
 query=' '.join(sys.argv[1:])
 # naive: embed query and compute cosine similarity
-import subprocess,openai,math
+import subprocess,math
 key = subprocess.check_output(['security','find-generic-password','-s','OPENAI_API_KEY','-a','amby','-w']).decode().strip()
-openai.api_key = key
-r = openai.Embedding.create(input=query, model='text-embedding-3-small')
-qvec = r['data'][0]['embedding']
+from openai import OpenAI
+client = OpenAI(api_key=key)
+r = client.embeddings.create(input=query, model='text-embedding-3-small')
+qvec = r.data[0].embedding
 
 def cosine(a,b):
     dot=sum(x*y for x,y in zip(a,b))
