@@ -50,8 +50,9 @@ if __name__=='__main__':
     key=get_openai_key()
     use_openai = key is not None
     if use_openai:
-        import openai
-        openai.api_key = key
+        # modern OpenAI client
+        from openai import OpenAI
+        client = OpenAI(api_key=key)
     else:
         print("No OpenAI key found in Keychain; exiting.")
         sys.exit(1)
@@ -59,8 +60,8 @@ if __name__=='__main__':
     from tqdm import tqdm
     embeddings=[]
     for d in tqdm(docs):
-        r = openai.Embedding.create(input=d['text'], model='text-embedding-3-small')
-        emb = r['data'][0]['embedding']
+        r = client.embeddings.create(input=d['text'], model='text-embedding-3-small')
+        emb = r.data[0].embedding
         embeddings.append({'id':d['id'],'emb':emb,'meta':{'source':d['source']}})
     # store minimal chroma-like json for now
     CHROMA_DIR.mkdir(parents=True,exist_ok=True)
