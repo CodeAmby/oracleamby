@@ -2,7 +2,16 @@
 import time, json
 from web3 import Web3
 
-RPC='https://rpc.sepolia.org'
+import subprocess, os
+alchemy_key = None
+try:
+    alchemy_key = subprocess.check_output(['security','find-generic-password','-s','ALCHEMY_API_KEY','-a','amby','-w']).decode().strip()
+except Exception:
+    alchemy_key = None
+if alchemy_key:
+    RPC = f'https://eth-sepolia.g.alchemy.com/v2/{alchemy_key}'
+else:
+    RPC = 'https://rpc.sepolia.org'
 w3=Web3(Web3.HTTPProvider(RPC))
 agent_address=''
 # read agent address from AMBY_ETH_HOT

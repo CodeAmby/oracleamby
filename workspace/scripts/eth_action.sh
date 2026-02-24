@@ -119,7 +119,18 @@ python3 - <<PY
 from web3 import Web3
 from eth_account import Account
 import json,sys,subprocess
-w3 = Web3(Web3.HTTPProvider('https://rpc.sepolia.org'))
+import os
+alchemy_key = None
+try:
+    import subprocess
+    alchemy_key = subprocess.check_output(['security','find-generic-password','-s','ALCHEMY_API_KEY','-a','amby','-w']).decode().strip()
+except Exception:
+    alchemy_key = None
+if alchemy_key:
+    rpc = f'https://eth-sepolia.g.alchemy.com/v2/{alchemy_key}'
+else:
+    rpc = 'https://rpc.sepolia.org'
+w3 = Web3(Web3.HTTPProvider(rpc))
 priv = "$KEY"
 acct = Account.from_key(bytes.fromhex(priv if not priv.startswith('0x') else priv[2:]))
 nonce = w3.eth.get_transaction_count(acct.address)
