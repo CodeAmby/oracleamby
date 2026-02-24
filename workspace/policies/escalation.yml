@@ -1,0 +1,15 @@
+actions_requiring_human:
+  - withdraw_funds
+  - change_api_scopes
+  - publish_post_high_reach
+  - create_new_api_master_key
+
+auto_allowed:
+  - create_checkout_session
+  - deploy_preview
+  - refund_low_amount
+
+approval_flow:
+  human_confirmation_required: true
+  confirmation_method: telegram_dm_to_controller
+  timeout_hours: 24

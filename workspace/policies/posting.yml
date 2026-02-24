@@ -1,0 +1,4 @@
+posting:
+  auto_post_threshold: 0.8  # confidence threshold for auto-posting
+  pending_queue_dir: workspace/pending_posts
+  toxicity_model: builtin

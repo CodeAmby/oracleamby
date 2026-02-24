@@ -1,0 +1,4 @@
+payouts:
+  auto_approve_threshold_usd: 50
+  requires_human_for_transfer_above_usd: 50
+  notification_channel: telegram:YOUR_CONTROL_CHAT_ID
