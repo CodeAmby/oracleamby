@@ -96,7 +96,10 @@ PY
   ID=$(date +%s)
   echo "{\"id\":\"$ID\",\"to\":\"$TO\",\"value_wei\":\"$VALUE\",\"value_usd\":\"$VALUE_USD\"}" > "$PROPOSAL_DIR/proposal-$ID.json"
   # notify controller via Telegram
-  "$PWD/telegram_send.sh" "[Amby] Proposal $ID: tx to $TO for $VALUE_USD USD requires approval. Reply 'approve $ID' to broadcast."
+  ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+  if [ -x "$ROOT/scripts/telegram_send.sh" ]; then
+    "$ROOT/scripts/telegram_send.sh" "[Amby] Proposal $ID: tx to $TO for $VALUE_USD USD requires approval. Reply 'approve $ID' to broadcast."
+  fi
   exit 0
 fi
 
@@ -110,7 +113,10 @@ PY
   mkdir -p "$PROPOSAL_DIR"
   ID=$(date +%s)
   echo "{\"id\":\"$ID\",\"to\":\"$TO\",\"value_wei\":\"$VALUE\",\"value_usd\":\"$VALUE_USD\"}" > "$PROPOSAL_DIR/proposal-$ID.json"
-  "$PWD/telegram_send.sh" "[Amby] Proposal $ID: tx to $TO for $VALUE_USD USD would exceed daily limit. Reply 'approve $ID' to broadcast."
+  ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+  if [ -x "$ROOT/scripts/telegram_send.sh" ]; then
+    "$ROOT/scripts/telegram_send.sh" "[Amby] Proposal $ID: tx to $TO for $VALUE_USD USD would exceed daily limit. Reply 'approve $ID' to broadcast."
+  fi
   exit 0
 fi
 
