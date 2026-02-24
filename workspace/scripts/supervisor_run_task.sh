@@ -27,9 +27,23 @@ jq -c '.tasks[] | select(.status=="queued")' "$STATE" | while read -r task; do
   if timeout 1800 bash -lc "$cmd" >> "$logfile" 2>&1; then
     jq --arg id "$id" '(.tasks[] | select(.id==$id) | .status) = "done" | (.tasks[] | select(.id==$id) | .completed) = now' "$STATE" > "$STATE.tmp" && mv "$STATE.tmp" "$STATE"
     echo "$(date -u +%FT%TZ) - Task $id completed" >> "$logfile"
+    # notify controller of completion
+    if command -v security >/dev/null 2>&1; then
+      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a felix -w 2>/dev/null || true)
+    fi
+    if [ -n "$controller_cid" ]; then
+      "$ROOT/scripts/telegram_send.sh" "[Felix] Task $id completed successfully."
+    fi
   else
     jq --arg id "$id" '(.tasks[] | select(.id==$id) | .status) = "failed" | (.tasks[] | select(.id==$id) | .attempts) += 1' "$STATE" > "$STATE.tmp" && mv "$STATE.tmp" "$STATE"
     echo "$(date -u +%FT%TZ) - Task $id failed" >> "$logfile"
+    # notify controller of failure
+    if command -v security >/dev/null 2>&1; then
+      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a felix -w 2>/dev/null || true)
+    fi
+    if [ -n "$controller_cid" ]; then
+      "$ROOT/scripts/telegram_send.sh" "[Felix] Task $id failed. Check logs: $logfile"
+    fi
   fi
 done
 

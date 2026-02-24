@@ -39,7 +39,8 @@ if [ -n "$stalled" ]; then
     jq --arg id "$taskid" '(.tasks[] | select(.id==$id) | .status) = "stalled"' "$STATE" > "$STATE.tmp" && mv "$STATE.tmp" "$STATE"
     if [ -n "$controller_cid" ]; then
       echo "$(date -u +%FT%TZ) - Task $taskid stalled and marked. Notify controller: $controller_cid" >> "$LOG_DIR/notifications.log"
-      # Real implementation: send Telegram message via bot API with controller chat id.
+      # Send Telegram notification
+      "$ROOT/scripts/telegram_send.sh" "[Felix] Task $taskid stalled and marked. Please investigate."
     else
       echo "$(date -u +%FT%TZ) - Task $taskid stalled and marked. No controller chat id configured." >> "$LOG_DIR/notifications.log"
     fi
