@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Usage: ./store_secret.sh <SERVICE_NAME> <ACCOUNT> <SECRET>
-# Example: ./store_secret.sh STRIPE_SECRET felix sk_test_...
+# Example: ./store_secret.sh STRIPE_SECRET amby sk_test_...
 
 if [ "$#" -ne 3 ]; then
   echo "Usage: $0 <SERVICE_NAME> <ACCOUNT> <SECRET>"

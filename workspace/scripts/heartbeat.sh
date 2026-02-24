@@ -8,7 +8,7 @@ LOG_FILE="$LOG_DIR/heartbeat.log"
 
 # Keychain service name to read controller chat id from
 KEYCHAIN_SERVICE="CONTROLLER_CHAT_ID"
-KEYCHAIN_ACCOUNT="felix"
+KEYCHAIN_ACCOUNT="amby"
 
 mkdir -p "$ROOT/state" "$LOG_DIR"
 

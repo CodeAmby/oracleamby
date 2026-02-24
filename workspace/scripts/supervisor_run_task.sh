@@ -29,7 +29,7 @@ jq -c '.tasks[] | select(.status=="queued")' "$STATE" | while read -r task; do
     echo "$(date -u +%FT%TZ) - Task $id completed" >> "$logfile"
     # notify controller of completion
     if command -v security >/dev/null 2>&1; then
-      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a felix -w 2>/dev/null || true)
+      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a amby -w 2>/dev/null || true)
     fi
     if [ -n "$controller_cid" ]; then
       "$ROOT/scripts/telegram_send.sh" "[Felix] Task $id completed successfully."
@@ -39,7 +39,7 @@ jq -c '.tasks[] | select(.status=="queued")' "$STATE" | while read -r task; do
     echo "$(date -u +%FT%TZ) - Task $id failed" >> "$logfile"
     # notify controller of failure
     if command -v security >/dev/null 2>&1; then
-      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a felix -w 2>/dev/null || true)
+      controller_cid=$(security find-generic-password -s CONTROLLER_CHAT_ID -a amby -w 2>/dev/null || true)
     fi
     if [ -n "$controller_cid" ]; then
       "$ROOT/scripts/telegram_send.sh" "[Felix] Task $id failed. Check logs: $logfile"

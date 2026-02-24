@@ -19,8 +19,8 @@ get_secret() {
   security find-generic-password -s "$service" -a "$account" -w 2>/dev/null || true
 }
 
-BOT_TOKEN=$(get_secret TELEGRAM_BOT_TOKEN felix)
-CHAT_ID=$(get_secret CONTROLLER_CHAT_ID felix)
+BOT_TOKEN=$(get_secret TELEGRAM_BOT_TOKEN amby)
+CHAT_ID=$(get_secret CONTROLLER_CHAT_ID amby)
 
 if [ -z "$BOT_TOKEN" ] || [ -z "$CHAT_ID" ]; then
   echo "Telegram bot token or chat id not configured in Keychain." >&2
