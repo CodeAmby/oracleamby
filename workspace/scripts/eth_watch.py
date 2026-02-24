@@ -18,8 +18,15 @@ except Exception as e:
 
 print('Watching address', agent_address)
 
-def handle_tx(tx):
-    print('tx',tx)
+import subprocess
+
+def notify(text):
+    # call telegram_send if available
+    script = os.path.join(os.path.dirname(__file__), 'telegram_send.sh')
+    if os.path.exists(script):
+        subprocess.call([script, text])
+    else:
+        print('telegram_send not found;', text)
 
 # naive poll
 seen=set()
@@ -30,7 +37,9 @@ while True:
             tx = w3.eth.get_transaction(t)
             if tx['to'] and tx['to'].lower()==agent_address.lower() and tx['hash'].hex() not in seen:
                 seen.add(tx['hash'].hex())
-                print(json.dumps({'event':'incoming','tx':tx}, default=str))
+                msg = json.dumps({'event':'incoming','tx_hash':tx['hash'].hex(),'from':tx['from'],'value':str(tx['value'])})
+                print(msg)
+                notify(f"[Amby] Incoming tx to agent: from {tx['from']} value wei {tx['value']} tx {tx['hash'].hex()}")
     except Exception as e:
         print('err',e)
     time.sleep(15)
