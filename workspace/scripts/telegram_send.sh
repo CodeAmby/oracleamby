@@ -28,11 +28,7 @@ if [ -z "$BOT_TOKEN" ] || [ -z "$CHAT_ID" ]; then
 fi
 
 # url-encode message lightly
-payload=$(python3 - <<PY
-import sys,urllib.parse
-print(urllib.parse.quote(sys.argv[1]))
-PY
-"$MSG")
+payload=$(python3 -c "import urllib.parse,sys; print(urllib.parse.quote(sys.argv[1]))" "$MSG")
 
 curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/sendMessage" -d "chat_id=${CHAT_ID}&text=${payload}&parse_mode=Markdown" > /tmp/telegram_send_resp.json || true
 cat /tmp/telegram_send_resp.json
