@@ -177,15 +177,56 @@ while True:
             text = text.strip()
             parts = text.split()
             cmd = parts[0].lower()
-            if cmd=='approve' and len(parts)>=2:
-                pid = parts[1]
+            # support commands with or without id
+            if cmd=='approve':
+                if len(parts)>=2:
+                    pid = parts[1]
+                else:
+                    # find most recent pending proposal
+                    props = sorted(PROPOSAL_DIR.glob('proposal-*.json'))
+                    pid=None
+                    for p in reversed(props):
+                        j=json.load(open(p))
+                        if j.get('status')=='pending':
+                            pid=j.get('id'); break
+                    if not pid:
+                        send_msg('No pending proposals found.')
+                        continue
                 handle_approve(pid, user_id)
-            elif cmd=='confirm' and len(parts)>=2:
-                pid = parts[1]
+            elif cmd=='confirm' or cmd=='yes':
+                if len(parts)>=2:
+                    pid = parts[1]
+                else:
+                    # find most recent awaiting_confirm
+                    props = sorted(PROPOSAL_DIR.glob('proposal-*.json'))
+                    pid=None
+                    for p in reversed(props):
+                        j=json.load(open(p))
+                        if j.get('status')=='awaiting_confirm':
+                            pid=j.get('id'); break
+                    if not pid:
+                        send_msg('No proposals awaiting confirmation.')
+                        continue
                 handle_confirm(pid, user_id)
-            elif cmd=='deny' and len(parts)>=2:
-                pid = parts[1]
+            elif cmd=='deny' or cmd=='no':
+                if len(parts)>=2:
+                    pid = parts[1]
+                else:
+                    props = sorted(PROPOSAL_DIR.glob('proposal-*.json'))
+                    pid=None
+                    for p in reversed(props):
+                        j=json.load(open(p))
+                        if j.get('status') in ('pending','awaiting_confirm'):
+                            pid=j.get('id'); break
+                    if not pid:
+                        send_msg('No pending or awaiting proposals to deny.')
+                        continue
                 handle_deny(pid, user_id)
+            elif cmd=='allow':
+                # set a temporary flag file to allow next approve to auto-broadcast
+                flag = STATE_DIR / 'allow_next_approve'
+                flag.write_text('1')
+                send_msg('Next approve will auto-broadcast without requiring confirm. Reply deny to cancel.')
             elif cmd=='status' and len(parts)>=2:
                 pid = parts[1]
                 prop = load_proposal(pid)
@@ -195,7 +236,7 @@ while True:
                 now = time.time()
                 last = help_throttle.get(str(user_id), 0)
                 if now - last > HELP_COOLDOWN and str(user_id)==str(CONTROLLER_CHAT):
-                    send_msg("Commands: approve <id>, confirm <id>, deny <id>, status <id>")
+                    send_msg("Commands: approve/confirm/deny/allow (id optional); yes/no also work")
                     help_throttle[str(user_id)] = now
         backoff=1
     except Exception as e:
