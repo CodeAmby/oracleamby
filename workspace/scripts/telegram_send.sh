@@ -9,7 +9,8 @@ if [ "$#" -lt 1 ]; then
   exit 2
 fi
 
-MSG="$1"
+# Capture full message
+MSG="$*"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
 get_secret() {
