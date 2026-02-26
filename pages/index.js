@@ -1,0 +1,1 @@
+export default function Page(){return React.createElement('div',null,React.createElement('h1',null,'Amby Demo'))}
