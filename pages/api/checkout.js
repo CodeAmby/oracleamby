@@ -5,7 +5,8 @@ export default async function handler(req, res) {
     const { email } = body
     const fs = require('fs')
     const path = require('path')
-    const ROOT = path.resolve(__dirname, '..', '..', '..')
+    // Use process.cwd() so the API writes into the project directory on Vercel deployments
+    const ROOT = process.cwd()
     const STATE_DIR = path.join(ROOT, 'workspace', 'state')
     const PROPOSAL_DIR = path.join(STATE_DIR, 'proposals')
     if (!fs.existsSync(PROPOSAL_DIR)) fs.mkdirSync(PROPOSAL_DIR, { recursive: true })
