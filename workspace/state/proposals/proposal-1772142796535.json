@@ -1,0 +1,9 @@
+{
+  "id": "1772142796535",
+  "to": "0x1111111111111111111111111111111111111111",
+  "value_wei": "10000000000000000",
+  "value_usd": "10",
+  "purchaser": "test@amby.example",
+  "reason": "Fake checkout purchase",
+  "status": "pending"
+}
