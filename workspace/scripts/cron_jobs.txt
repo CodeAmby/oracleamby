@@ -1,0 +1,10 @@
+# Cron entry to run fulfillment worker every 5 minutes
+# Add to crontab with: crontab -l | { cat; echo "*/5 * * * * /Users/ambybucks/.openclaw/workspace/workspace/scripts/fulfillment_worker.py >> /Users/ambybucks/.openclaw/workspace/workspace/logs/fulfillment.log 2>&1"; } | crontab -
+
+# Supervisor example (supervisord config)
+# [program:fulfillment_worker]
+# command=/Users/ambybucks/.openclaw/workspace/workspace/scripts/fulfillment_worker.py
+# autostart=true
+# autorestart=true
+# stdout_logfile=/Users/ambybucks/.openclaw/workspace/workspace/logs/fulfillment.log
+# stderr_logfile=/Users/ambybucks/.openclaw/workspace/workspace/logs/fulfillment.err
