@@ -1,4 +1,14 @@
 #!/usr/bin/env python3
+"""
+Telegram approval listener for proposal approve/confirm/deny commands.
+
+Uses a dedicated bot token (TELEGRAM_BOT_TOKEN_APPROVAL) to avoid getUpdates
+conflict with OpenClaw/AmbyOracleBot. Both can run simultaneously.
+
+Setup: Create a new bot via @BotFather, then add to Keychain:
+  security add-generic-password -s TELEGRAM_BOT_TOKEN_APPROVAL -a amby -w YOUR_NEW_BOT_TOKEN
+  (CONTROLLER_CHAT_ID remains unchanged - it's your Telegram user ID)
+"""
 import os,sys,time,subprocess,json
 from pathlib import Path
 
@@ -16,13 +26,15 @@ def keychain_read(service, account='amby'):
     except subprocess.CalledProcessError:
         return None
 
-BOT_TOKEN = keychain_read('TELEGRAM_BOT_TOKEN')
+# Use dedicated approval bot token (separate from OpenClaw/AmbyOracleBot)
+BOT_TOKEN = keychain_read('TELEGRAM_BOT_TOKEN_APPROVAL')
 CONTROLLER_CHAT = keychain_read('CONTROLLER_CHAT_ID')
 if CONTROLLER_CHAT is not None and CONTROLLER_CHAT.startswith('telegram:'):
     CONTROLLER_CHAT = CONTROLLER_CHAT.split(':',1)[1]
 
 if not BOT_TOKEN or not CONTROLLER_CHAT:
-    print('Missing TELEGRAM_BOT_TOKEN or CONTROLLER_CHAT_ID in Keychain. Exiting.')
+    print('Missing TELEGRAM_BOT_TOKEN_APPROVAL or CONTROLLER_CHAT_ID in Keychain.')
+    print('  Add approval bot token: security add-generic-password -s TELEGRAM_BOT_TOKEN_APPROVAL -a amby -w <token>')
     sys.exit(1)
 
 API_BASE = f'https://api.telegram.org/bot{BOT_TOKEN}'
